@@ -35,7 +35,7 @@ exports.peer_procs = function (assert) {
             foreverPid : Math.floor(Math.random() * Math.pow(2,16)),
             logFile : '/tmp/forever/forever' + id + '.log',
             options : [],
-            file : (Math.random() * Math.pow(16,3)) + '.js',
+            file : Math.floor(Math.random() * Math.pow(16,3)) + '.js',
             pidFile : '/tmp/forever/pids/forever' + id + '.pid',
         }
     }
