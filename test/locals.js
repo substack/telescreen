@@ -13,6 +13,7 @@ process.binding('evals').Script.runInNewContext(
         },
         module : telescreenModule,
         exports : telescreenModule.exports,
+        console : console,
     }
 );
 var telescreen = telescreenModule.exports;

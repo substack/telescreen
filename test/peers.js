@@ -48,7 +48,6 @@ exports.peer_procs = function (assert) {
         []
     ];
     mock._lists = mock.lists.slice();
-    
     forever.list = function () { return mock.lists.shift() };
     
     var listT = setTimeout(function () {
