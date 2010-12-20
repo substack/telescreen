@@ -30,9 +30,11 @@ exports.local_procs = function (assert) {
         assert.fail('never got the process list');
     }, 500);
     
-    var server = telescreen.listen(9999);
+    var port = Math.floor(Math.random() * (Math.pow(2,16) - 10000) + 10000);
+    
+    var server = telescreen.listen(port);
     server.on('ready', function () {
-        dnode.connect(9999, function (remote, conn) {
+        dnode.connect(port, function (remote, conn) {
             remote.list(function (err, xs) {
                 clearTimeout(listT);
                 if (err) assert.fail(err);
