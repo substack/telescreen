@@ -1,0 +1,30 @@
+{
+    "name" : "telescreen",
+    "version" : "0.0.1",
+    "description" : "Remote process monitor and control",
+    "modules" : {
+        "index" : "./index.js",
+    },
+    "repository" : {
+        "type" : "git",
+        "url" : "http://github.com/substack/telescreen.git"
+    },
+    "keywords": [
+        "screen",
+        "process",
+        "remote",
+        "control",
+        "monitor"
+    ],
+    "author" : {
+        "name" : "James Halliday",
+        "email" : "mail@substack.net",
+        "url" : "http://substack.net"
+    },
+    "dependencies" : {
+        "forever" : ">=0.3.0",
+        "optimist" : ">=0.1.2"
+    },
+    "license" : "MIT/X11",
+    "engine" : ["node >=0.2.0"]
+}
