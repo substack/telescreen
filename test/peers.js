@@ -2,8 +2,8 @@ var dnode = require('dnode');
 var Seq = require('seq');
 
 // use the forever in test/mock/ for hackish testing purposes
-require.paths.unshift(__dirname + '/mock');
-var forever = require('forever');
+var forever = {};
+
 var telescreen = require(__dirname + '/..');
 
 exports.peer_procs = function (assert) {

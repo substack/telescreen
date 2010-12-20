@@ -1,9 +1,21 @@
 var dnode = require('dnode');
+var fs = require('fs');
 
 // use the forever in test/mock/ for hackish testing purposes
-require.paths.unshift(__dirname + '/mock');
-var forever = require('forever');
-var telescreen = require(__dirname + '/..');
+var forever = {};
+var telescreenModule = { exports : {} };
+
+process.binding('evals').Script.runInNewContext(
+    fs.readFileSync(__dirname + '/../index.js').toString(),
+    {
+        require : function (p) {
+            return p === 'forever' ? forever : require(p)
+        },
+        module : telescreenModule,
+        exports : telescreenModule.exports,
+    }
+);
+var telescreen = telescreenModule.exports;
 
 exports.local_procs = function (assert) {
     var loadT = setTimeout(function () {
