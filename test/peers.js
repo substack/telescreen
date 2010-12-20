@@ -1,10 +1,23 @@
 var dnode = require('dnode');
+var fs = require('fs');
 var Seq = require('seq');
 
-// use the forever in test/mock/ for hackish testing purposes
+// crafty hack to get around module loading and caching
 var forever = {};
+var telescreenModule = { exports : {} };
 
-var telescreen = require(__dirname + '/..');
+process.binding('evals').Script.runInNewContext(
+    fs.readFileSync(__dirname + '/../index.js').toString(),
+    {
+        require : function (p) {
+            return p === 'forever' ? forever : require(p)
+        },
+        module : telescreenModule,
+        exports : telescreenModule.exports,
+        console : console,
+    }
+);
+var telescreen = telescreenModule.exports;
 
 exports.peer_procs = function (assert) {
     var loadT = setTimeout(function () {
@@ -49,7 +62,7 @@ exports.peer_procs = function (assert) {
         Seq(1,2,3)
             .parEach(function (i) {
                 var next = this;
-                dnode(function () {
+                var c = dnode(function () {
                     this.role = 'peer';
                     this.name = 'peer' + i;
                     
@@ -61,14 +74,19 @@ exports.peer_procs = function (assert) {
                     this.list = function () {
                         assert.fail('list called, should be local.list');
                     };
-                }).connect(port, this.bind({}, null));
+                });
+                c.connect(port, this.bind({}, null));
+                c.on('localError', function (err) { throw err });
+            })
+            .seq(function () {
+                setTimeout(this, 100);
             })
             .seq(function () {
                 dnode.connect(port, function (remote, conn) {
                     remote.list(function (err, xs) {
                         clearTimeout(listT);
                         if (err) assert.fail(err);
-                        assert.eql(xs, mock._list);
+                        assert.eql(xs, mock._lists);
                         conn.end();
                         server.end();
                     })

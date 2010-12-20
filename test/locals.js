@@ -1,7 +1,7 @@
 var dnode = require('dnode');
 var fs = require('fs');
 
-// use the forever in test/mock/ for hackish testing purposes
+// crafty hack to get around module loading and caching
 var forever = {};
 var telescreenModule = { exports : {} };
 
