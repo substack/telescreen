@@ -85,7 +85,8 @@ exports.peer_procs = function (assert) {
                     remote.list(function (err, xs) {
                         clearTimeout(listT);
                         if (err) assert.fail(err);
-                        assert.eql(xs, mock._lists);
+                        assert.eql(xs.length, mock._lists.length);
+                        assert.eql(xs.sort(), mock._lists.sort());
                         conn.end();
                         server.end();
                     })

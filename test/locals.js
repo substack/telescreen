@@ -51,7 +51,7 @@ exports.local_procs = function (assert) {
             remote.list(function (err, xs) {
                 clearTimeout(listT);
                 if (err) assert.fail(err);
-                assert.eql(xs, mock.list);
+                assert.eql(xs, [ mock.list ]);
                 conn.end();
                 server.end();
             })
