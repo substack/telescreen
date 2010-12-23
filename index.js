@@ -24,7 +24,7 @@ function server (name) {
         self.role = 'peer';
         
         self.local = {
-            list : function (cb) {
+            processes : function (cb) {
                 cb(null, Hash.map(procs, fromProc));
             },
             start : function (cmd, options, cb) {
@@ -44,14 +44,14 @@ function server (name) {
             },
         };
         
-        self.list = function (cb) {
+        self.processes = function (cb) {
             Seq(self)
                 .extend(Hash(peers).values)
-                .parMap(function (peer) {
-                    peer.local.list(this);
+                .parEach(function (peer) {
+                    peer.local.processes(this.into(peer.name));
                 })
                 .seq(function () {
-                    cb(null, this.stack);
+                    cb(null, this.vars);
                 })
                .catch(cb)
             ;

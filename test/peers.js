@@ -42,10 +42,10 @@ exports.peer_procs = function (assert) {
     
     var mock = {};
     mock.lists = [
-        [ genPid() ],
-        [ genPid(), genPid(), genPid() ],
-        [ genPid() ],
-        []
+        { abc : genPid() },
+        { def : genPid(), hij : genPid(), klm : genPid() },
+        { nop : genPid() },
+        {}
     ];
     mock._lists = mock.lists.slice();
     forever.list = function () { return mock.lists.shift() };
@@ -86,7 +86,7 @@ exports.peer_procs = function (assert) {
                         clearTimeout(listT);
                         if (err) assert.fail(err);
                         assert.eql(xs.length, mock._lists.length);
-                        assert.eql(xs.sort(), mock._lists.sort());
+                        assert.eql(xs.sort(cmp), mock._lists.sort(cmp));
                         conn.end();
                         server.end();
                     })
