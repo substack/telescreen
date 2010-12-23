@@ -27,10 +27,20 @@ function server (name) {
             list : function (cb) {
                 cb(null, Hash.map(procs, fromProc));
             },
-            start : function (cmd, options) {
-                var child = forever.start(cmd, options || {});
-                var id = child.childData.foreverPid;
+            start : function (cmd, options, cb) {
+                if (typeof options === 'function') {
+                    cb = options; options = {};
+                }
+                
+                var proc = forever.start(cmd, options || {});
+                
+                do {
+                    var id = (Math.random() * Math.pow(2,32)).toString(16);
+                } while (procs[id]);
+                proc.id = id;
                 procs[id] = proc;
+                
+                if (cb) cb(null, fromProc(proc));
             },
         };
         
@@ -61,11 +71,11 @@ exports.listen = function () {
 exports.fromProc = fromProc;
 function fromProc (proc) {
     return {
-        id : proc.childData.foreverPid,
-        pid : proc.childData.pid,
+        id : proc.id,
+        pid : proc.child.pid,
         start : proc.start,
         stop : proc.stop,
         options : proc.options,
-        sh : [ proc.command ].concat(proc.options),
+        cmd : [ proc.options.command ].concat(proc.options.options),
     };
 }
