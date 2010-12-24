@@ -27,7 +27,7 @@ else if (cmd === 'view') {
             console.log('<stderr:' + id + '> ' + data);
         });
         
-        ts.local.subscribe(em.emit.bind(em));
+        ts.subscribe(em.emit.bind(em));
     });
 }
 else {
