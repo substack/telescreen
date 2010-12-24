@@ -11,6 +11,36 @@ function server (name) {
     var peers = {};
     var procs = {};
     
+    var emitters = {};
+    function emit () {
+        var args = arguments;
+        Hash(emitters).forEach(function (emitter) {
+            emitter.apply({}, arguments);
+        });
+    }
+    
+    function hookProc(proc) {
+        proc.on('error', function (err) {
+            emit('error', proc.id, err);
+        });
+        
+        proc.on('stdout', function (err, data) {
+            emit('stdout', proc.id, data);
+        });
+        
+        proc.on('stderr', function (err, data) {
+            emit('stderr', proc.id, data);
+        });
+        
+        proc.on('exit', function (err) {
+            emit('exit', proc.id, err);
+        });
+        
+        proc.on('stop', function () {
+            emit('stop', proc.id);
+        });
+    }
+    
     return dnode(function (remote, conn) {
         var self = this;
         
@@ -39,8 +69,12 @@ function server (name) {
                 } while (procs[id]);
                 proc.id = id;
                 procs[id] = proc;
+                hookProc(proc);
                 
                 if (cb) cb(null, fromProc(proc));
+            },
+            subscribe : function (emit) {
+                emitters[conn.id] = emit;
             },
         };
         
@@ -57,8 +91,8 @@ function server (name) {
             ;
         };
         
-        self.start = function (server, name, cmd) {
-            peers[server].start(name, cmd);
+        self.start = function (server, cmd, cb) {
+            peers[server].local.start(cmd, cb);
         };
     });
 };
