@@ -73,8 +73,9 @@ function server (name) {
                 
                 if (cb) cb(null, fromProc(proc));
             },
-            subscribe : function (emit) {
+            subscribe : function (emit, cb) {
                 emitters[conn.id] = emit;
+                if (cb) cb(null);
             },
         };
         
