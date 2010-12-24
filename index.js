@@ -77,10 +77,7 @@ function telescreen (name) {
         ;
     };
     
-    self.start = function (server, cmd, cb) {
-        peers[server].local.start(cmd, cb);
-    };
-    
+    self.start = self.local.start;
     self.name = name;
     
     var service = dnode(function (remote, conn) {
