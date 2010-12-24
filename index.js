@@ -28,7 +28,7 @@ function server (name) {
             emit('stdout', data.toString(), proc.id);
         });
         
-        proc.on('stderr', function (err, data) {
+        proc.on('stderr', function (data) {
             emit('stderr', data.toString(), proc.id);
         });
         
