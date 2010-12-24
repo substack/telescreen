@@ -24,7 +24,7 @@ exports.events = function (assert) {
                 server.end();
             });
             
-            ts.local.subscribe(em.emit.bind(em), function () {
+            ts.subscribe(em.emit.bind(em), function () {
                 ts.local.start(cmd, { silent : true }, function (err, proc) {
                     assert.eql(cmd, proc.cmd);
                 });

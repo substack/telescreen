@@ -62,10 +62,6 @@ function telescreen (name) {
             
             if (cb) cb(null, fromProc(proc));
         },
-        subscribe : function (emit, cb) {
-            emitters[conn.id] = emit;
-            if (cb) cb(null);
-        },
     };
     
     self.processes = function (cb) {
@@ -94,7 +90,15 @@ function telescreen (name) {
             }
         });
         
-        return self;
+        return Hash.merge(self, {
+            subscribe : function (emit, cb) {
+                emitters[conn.id] = emit;
+                conn.on('end', function () {
+                    delete emitters[conn.id];
+                });
+                if (cb) cb(null);
+            },
+        });
     });
     
     return Hash.merge(self, {
