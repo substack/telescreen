@@ -15,25 +15,25 @@ function server (name) {
     function emit () {
         var args = arguments;
         Hash(emitters).forEach(function (emitter) {
-            emitter.apply({}, arguments);
+            emitter.apply({}, args);
         });
     }
     
     function hookProc(proc) {
         proc.on('error', function (err) {
-            emit('error', proc.id, err);
+            emit('error', err, proc.id);
         });
         
-        proc.on('stdout', function (err, data) {
-            emit('stdout', proc.id, data);
+        proc.on('stdout', function (data) {
+            emit('stdout', data.toString(), proc.id);
         });
         
         proc.on('stderr', function (err, data) {
-            emit('stderr', proc.id, data);
+            emit('stderr', data.toString(), proc.id);
         });
         
-        proc.on('exit', function (err) {
-            emit('exit', proc.id, err);
+        proc.on('exit', function () {
+            emit('exit', proc.id);
         });
         
         proc.on('stop', function () {
